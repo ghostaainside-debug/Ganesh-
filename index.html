@@ -49,6 +49,26 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #checkout-modal, #checkout-modal * {
+                visibility: visible;
+            }
+            #checkout-modal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                background: white !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans antialiased min-h-screen flex flex-col justify-between pb-16 sm:pb-0">
@@ -223,7 +243,7 @@
                 <div class="bg-white p-4 rounded-xl border border-gray-200 space-y-3">
                     <h4 class="font-bold text-xs uppercase text-blue-600 flex items-center space-x-1">
                         <i class="fa-solid fa-wallet"></i>
-                        <span>Payment & Bank Setup</span>
+                        <span>Payment & QR Scanner Setup</span>
                     </h4>
                     <div class="space-y-2 text-xs">
                         <div>
@@ -234,6 +254,12 @@
                             <label class="block text-[10px] font-bold text-gray-600">Payee Name</label>
                             <input type="text" id="admin-upi-name" value="bikki kumar das" class="w-full px-2.5 py-1.5 border rounded-lg">
                         </div>
+                        
+                        <div>
+                            <label class="block text-[10px] font-bold text-blue-700">Upload Custom QR Scanner Image (File)</label>
+                            <input type="file" id="admin-qr-file" accept="image/*" onchange="handleQrUpload(event)" class="w-full px-2 py-1 text-[10px] border rounded-lg bg-gray-50">
+                        </div>
+
                         <div>
                             <label class="block text-[10px] font-bold text-gray-600">Bank & A/C No.</label>
                             <input type="text" id="admin-bank-acc" value="Kotak Mahindra Bank - A/C: 5151073620" class="w-full px-2.5 py-1.5 border rounded-lg">
@@ -250,14 +276,15 @@
 
             </div>
 
-            <!-- Product Edit & Management Table -->
+            <!-- Product Edit Table -->
             <div class="bg-white p-4 rounded-xl border border-gray-200 space-y-3">
                 <h4 class="font-bold text-xs uppercase text-gray-700">Live Catalog Management (<span id="admin-product-count">0</span>)</h4>
-                <div class="max-h-64 overflow-y-auto border rounded-lg">
+                <div class="max-h-72 overflow-y-auto border rounded-lg">
                     <table class="w-full text-left text-xs">
                         <thead class="bg-gray-100 uppercase font-bold text-[10px] text-gray-600 sticky top-0">
                             <tr>
                                 <th class="p-2">Item</th>
+                                <th class="p-2">Image Link</th>
                                 <th class="p-2">Price (₹)</th>
                                 <th class="p-2 text-right">Delete</th>
                             </tr>
@@ -308,73 +335,191 @@
         </div>
     </div>
 
-    <!-- CART DRAWER -->
+    <!-- PROFESSIONAL CART DRAWER (PRE-CHECKOUT BILLING) -->
     <div id="cart-drawer" class="fixed inset-0 bg-black/60 z-50 transition-opacity opacity-0 pointer-events-none">
         <div class="absolute inset-y-0 right-0 max-w-full flex">
-            <div id="cart-drawer-panel" class="w-screen max-w-xs bg-white shadow-2xl flex flex-col justify-between transform translate-x-full transition-transform">
+            <div id="cart-drawer-panel" class="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between transform translate-x-full transition-transform">
+                
+                <!-- Drawer Header -->
                 <div class="p-4 bg-gray-900 text-white flex justify-between items-center">
-                    <h2 class="text-sm font-bold">Your Cart</h2>
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-file-invoice text-yellow-400"></i>
+                        <h2 class="text-sm font-bold uppercase tracking-wider">Professional Cart Bill</h2>
+                    </div>
                     <button onclick="toggleCartDrawer()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
                 </div>
-                <div id="cart-items-container" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
-                <div class="p-4 bg-gray-50 border-t space-y-2 text-xs">
-                    <div class="flex justify-between font-bold text-gray-900">
-                        <span>Total Payable:</span>
-                        <span id="cart-total" class="text-brand-600">₹0</span>
+
+                <!-- Itemized Professional Billing Table in Cart -->
+                <div class="flex-1 overflow-y-auto p-4 space-y-3">
+                    <div class="text-[11px] text-gray-500 font-medium">Review your items and billing breakdown below:</div>
+                    <div id="cart-billing-table-container" class="border rounded-xl overflow-hidden">
+                        <table class="w-full text-left text-[11px]">
+                            <thead class="bg-gray-100 uppercase text-[10px] text-gray-600 border-b">
+                                <tr>
+                                    <th class="p-2">Item</th>
+                                    <th class="p-2 text-center">Qty</th>
+                                    <th class="p-2 text-right">Price</th>
+                                    <th class="p-2 text-right">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cart-items-container" class="divide-y"></tbody>
+                        </table>
                     </div>
-                    <button onclick="openCheckoutModal()" id="btn-proceed-checkout" disabled class="w-full bg-brand-600 text-white font-bold py-2.5 rounded-xl text-xs disabled:bg-gray-300">
-                        Proceed to Checkout
+
+                    <!-- Cart Summary Card -->
+                    <div class="bg-amber-50/60 border border-amber-200/60 p-3 rounded-xl space-y-1.5 text-[11px]">
+                        <div class="flex justify-between text-gray-600">
+                            <span>Subtotal:</span>
+                            <span id="cart-drawer-subtotal" class="font-semibold text-gray-900">₹0</span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>Taxes / GST:</span>
+                            <span class="font-semibold text-gray-900">₹0</span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>Delivery:</span>
+                            <span class="font-semibold text-green-600">FREE 🚚</span>
+                        </div>
+                        <div class="border-t pt-1.5 flex justify-between items-center font-black text-sm text-gray-900">
+                            <span>Total Payable:</span>
+                            <span id="cart-total" class="text-brand-600 text-base">₹0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Proceed Button -->
+                <div class="p-4 bg-gray-50 border-t space-y-2 text-xs">
+                    <button onclick="openCheckoutModal()" id="btn-proceed-checkout" disabled class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl text-xs disabled:bg-gray-300 shadow transition flex items-center justify-center space-x-1">
+                        <span>Proceed to Final Checkout & Invoice</span>
+                        <i class="fa-solid fa-arrow-right"></i>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- CHECKOUT MODAL -->
-    <div id="checkout-modal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-3">
-        <div class="bg-white w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl">
-            <div class="bg-brand-700 text-white p-3 flex justify-between items-center">
-                <h3 class="font-bold text-xs">Delivery & Payment</h3>
-                <button onclick="closeCheckoutModal()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <form id="checkout-form" onsubmit="handlePlaceOrder(event)" class="p-4 space-y-3 max-h-[80vh] overflow-y-auto text-xs">
-                <input type="text" id="cust-name" required placeholder="Full Name" class="w-full px-3 py-2 border rounded-lg">
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="tel" id="cust-phone" required pattern="[0-9]{10}" placeholder="Phone No." class="w-full px-3 py-2 border rounded-lg">
-                    <input type="text" id="cust-pincode" required placeholder="Pincode" class="w-full px-3 py-2 border rounded-lg">
+    <!-- PROFESSIONAL CHECKOUT & BILLING MODAL (POST-CHECKOUT BILLING) -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black/75 z-50 hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl my-auto">
+            
+            <!-- Modal Header -->
+            <div class="bg-gray-900 text-white p-3.5 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-file-invoice-dollar text-yellow-400 text-base"></i>
+                    <div>
+                        <h3 class="font-bold text-xs uppercase tracking-wide">Professional Tax Invoice</h3>
+                        <p class="text-[9px] text-gray-400">DESI STYLE WEAR - Official Billing</p>
+                    </div>
                 </div>
-                <textarea id="cust-address" required rows="2" placeholder="Full Address" class="w-full px-3 py-2 border rounded-lg"></textarea>
+                <div class="flex items-center space-x-2">
+                    <button onclick="window.print()" class="no-print bg-gray-800 hover:bg-gray-700 text-yellow-400 px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center space-x-1">
+                        <i class="fa-solid fa-print"></i>
+                        <span>Print Bill</span>
+                    </button>
+                    <button onclick="closeCheckoutModal()" class="text-gray-400 hover:text-white text-base"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
 
-                <div class="pt-2 border-t space-y-2">
-                    <p class="font-bold text-gray-700">Payment Option:</p>
+            <!-- Scrollable Billing Content -->
+            <form id="checkout-form" onsubmit="handlePlaceOrder(event)" class="p-4 space-y-4 max-h-[80vh] overflow-y-auto text-xs">
+                
+                <!-- Invoice Metadata -->
+                <div class="bg-gray-50 p-3 rounded-xl border flex justify-between items-center text-[11px]">
+                    <div>
+                        <p class="text-gray-500 font-semibold">Invoice Date:</p>
+                        <p id="invoice-date" class="font-bold text-gray-900"></p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-gray-500 font-semibold">Invoice Ref:</p>
+                        <p id="invoice-ref" class="font-mono font-bold text-brand-600"></p>
+                    </div>
+                </div>
+
+                <!-- Itemized Bill Table -->
+                <div class="space-y-1.5">
+                    <label class="block font-bold text-[11px] uppercase text-gray-700">Order Item Summary</label>
+                    <div class="border rounded-xl overflow-hidden">
+                        <table class="w-full text-left text-[11px]">
+                            <thead class="bg-gray-100 uppercase text-[10px] text-gray-600 border-b">
+                                <tr>
+                                    <th class="p-2">Item Description</th>
+                                    <th class="p-2 text-center">Qty</th>
+                                    <th class="p-2 text-right">Price</th>
+                                    <th class="p-2 text-right">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="billing-items-list" class="divide-y"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Financial Breakdown Box -->
+                <div class="bg-amber-50/60 border border-amber-200/60 p-3 rounded-xl space-y-1.5 text-[11px]">
+                    <div class="flex justify-between text-gray-600">
+                        <span>Cart Subtotal:</span>
+                        <span id="bill-subtotal" class="font-semibold text-gray-900">₹0</span>
+                    </div>
+                    <div class="flex justify-between text-gray-600">
+                        <span>GST / Taxes (Included 0%):</span>
+                        <span class="font-semibold text-gray-900">₹0</span>
+                    </div>
+                    <div class="flex justify-between text-gray-600">
+                        <span>Shipping & Handling:</span>
+                        <span class="font-semibold text-green-600">FREE 🚚</span>
+                    </div>
+                    <div class="border-t pt-1.5 flex justify-between items-center font-black text-sm text-gray-900">
+                        <span>Grand Total Payable:</span>
+                        <span id="bill-grand-total" class="text-brand-600 text-base">₹0</span>
+                    </div>
+                </div>
+
+                <!-- Customer Details Input Section -->
+                <div class="space-y-2 pt-1">
+                    <label class="block font-bold text-[11px] uppercase text-gray-700">Customer Delivery Details</label>
+                    <input type="text" id="cust-name" required placeholder="Full Name (e.g. Bikki Kumar Das)" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
                     <div class="grid grid-cols-2 gap-2">
-                        <label class="border rounded-lg p-2 text-center cursor-pointer bg-blue-50/50">
+                        <input type="tel" id="cust-phone" required pattern="[0-9]{10}" placeholder="10-Digit Mobile No." class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
+                        <input type="text" id="cust-pincode" required placeholder="Pincode (e.g. 815312)" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                    <textarea id="cust-address" required rows="2" placeholder="Full Delivery Address (House No, Street, Landmark, District, State)" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                </div>
+
+                <!-- Payment Selection -->
+                <div class="pt-2 border-t space-y-2">
+                    <label class="block font-bold text-[11px] uppercase text-gray-700">Select Payment Mode:</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="border rounded-lg p-2.5 text-center cursor-pointer bg-blue-50/50 hover:bg-blue-100/50 transition">
                             <input type="radio" name="payment_method" value="UPI / QR Code" checked onclick="togglePaymentView('UPI')" class="sr-only">
-                            <span class="font-bold text-[11px] text-blue-900">UPI / Paytm / GPay</span>
+                            <span class="font-bold text-[11px] text-blue-900"><i class="fa-solid fa-qrcode mr-1"></i> UPI / QR Code</span>
                         </label>
-                        <label class="border rounded-lg p-2 text-center cursor-pointer bg-purple-50/50">
+                        <label class="border rounded-lg p-2.5 text-center cursor-pointer bg-purple-50/50 hover:bg-purple-100/50 transition">
                             <input type="radio" name="payment_method" value="Bank Transfer" onclick="togglePaymentView('BANK')" class="sr-only">
-                            <span class="font-bold text-[11px] text-purple-900">Bank Transfer</span>
+                            <span class="font-bold text-[11px] text-purple-900"><i class="fa-solid fa-building-columns mr-1"></i> Bank Transfer</span>
                         </label>
                     </div>
 
+                    <!-- UPI Scanner Section -->
                     <div id="upi-qr-box" class="bg-blue-50 border p-3 rounded-xl text-center space-y-2">
-                        <img id="upi-qr-image" src="" class="w-28 h-28 mx-auto rounded border bg-white p-1">
+                        <img id="upi-qr-image" src="" class="w-32 h-32 mx-auto rounded border bg-white p-1 object-contain">
                         <p class="font-bold text-[11px]">Payee: <span id="display-payee-name">bikki kumar das</span></p>
-                        <p class="font-mono text-brand-600 font-bold text-[11px]">UPI: <span id="display-upi-id">bikki708@ptaxis</span></p>
-                        <a id="direct-upi-link" href="#" target="_blank" class="block bg-blue-600 text-white font-bold py-1.5 rounded-lg text-[11px]">
-                            Pay via UPI App
+                        <p class="font-mono text-brand-600 font-bold text-[11px]">UPI ID: <span id="display-upi-id">bikki708@ptaxis</span></p>
+                        <a id="direct-upi-link" href="#" target="_blank" class="block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg text-[11px] shadow transition">
+                            <i class="fa-solid fa-mobile-screen-button mr-1"></i> Pay via PhonePe / GPay / Paytm App
                         </a>
                     </div>
 
+                    <!-- Bank Details Section -->
                     <div id="bank-box" class="hidden bg-purple-50 border p-3 rounded-xl space-y-1 text-[11px]">
-                        <p><strong>A/C Details:</strong> <span id="display-bank-acc">Kotak Mahindra Bank - A/C: 5151073620</span></p>
-                        <p><strong>IFSC Code:</strong> <span id="display-bank-ifsc">KKBK0000152 (Ph: 8002322367)</span></p>
+                        <p class="font-bold text-purple-900 mb-1"><i class="fa-solid fa-university"></i> Direct Bank Transfer Info:</p>
+                        <p><strong>Bank Account:</strong> <span id="display-bank-acc">Kotak Mahindra Bank - A/C: 5151073620</span></p>
+                        <p><strong>IFSC & Contact:</strong> <span id="display-bank-ifsc">KKBK0000152 (Ph: 8002322367)</span></p>
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-brand-600 text-white font-bold py-2.5 rounded-xl shadow text-xs">
-                    Confirm & Place Order
+                <!-- Submit / Confirm Order Button -->
+                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl shadow-md text-xs tracking-wide transition flex items-center justify-center space-x-1">
+                    <i class="fa-solid fa-shield-check text-sm"></i>
+                    <span>Confirm & Generate Final Order</span>
                 </button>
             </form>
         </div>
@@ -382,12 +527,12 @@
 
     <!-- SUCCESS MODAL -->
     <div id="success-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-xs rounded-2xl p-5 text-center space-y-3">
+        <div class="bg-white w-full max-w-xs rounded-2xl p-5 text-center space-y-3 shadow-2xl">
             <i class="fa-solid fa-circle-check text-green-600 text-4xl"></i>
-            <h3 class="text-xl font-bold">Order Placed! 🎉</h3>
-            <p class="text-xs text-gray-600">Order ID: <span id="confirmed-order-id" class="font-mono font-bold text-brand-600"></span></p>
-            <button onclick="closeSuccessModal()" class="w-full bg-gray-900 text-white font-bold py-2 rounded-xl text-xs">
-                Done
+            <h3 class="text-xl font-bold">Order Confirmed! 🎉</h3>
+            <p class="text-xs text-gray-600">Your professional invoice has been recorded. Order ID: <span id="confirmed-order-id" class="font-mono font-bold text-brand-600"></span></p>
+            <button onclick="closeSuccessModal()" class="w-full bg-gray-900 text-white font-bold py-2.5 rounded-xl text-xs">
+                Back to Store
             </button>
         </div>
     </div>
@@ -425,7 +570,8 @@
             upiId: "bikki708@ptaxis",
             payeeName: "bikki kumar das",
             bankAcc: "Kotak Mahindra Bank - A/C: 5151073620",
-            bankIfsc: "KKBK0000152 (Ph: 8002322367)"
+            bankIfsc: "KKBK0000152 (Ph: 8002322367)",
+            customQrBase64: ""
         };
 
         function initStore() {
@@ -634,23 +780,26 @@
             container.innerHTML = '';
             let total = 0;
 
+            if (cart.length === 0) {
+                container.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-400">Your cart is empty.</td></tr>`;
+                document.getElementById('cart-drawer-subtotal').innerText = '₹0';
+                document.getElementById('cart-total').innerText = '₹0';
+                return;
+            }
+
             cart.forEach(item => {
                 total += item.price * item.qty;
-                const div = document.createElement('div');
-                div.className = "flex space-x-2 pt-2 border-b pb-2";
-                div.innerHTML = `
-                    <img src="${item.image}" class="w-12 h-14 object-cover rounded">
-                    <div class="flex-1 flex flex-col justify-between text-xs">
-                        <div>
-                            <h4 class="font-bold text-[11px] text-gray-900 line-clamp-1">${item.title}</h4>
-                            <p class="text-brand-600 font-extrabold">₹${item.price}</p>
-                        </div>
-                        <p class="text-[10px] text-gray-500">Qty: ${item.qty}</p>
-                    </div>
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-2 font-semibold text-gray-800 line-clamp-1">${item.title}</td>
+                    <td class="p-2 text-center font-bold text-gray-600">${item.qty}</td>
+                    <td class="p-2 text-right text-gray-600">₹${item.price}</td>
+                    <td class="p-2 text-right font-extrabold text-brand-600">₹${item.price * item.qty}</td>
                 `;
-                container.appendChild(div);
+                container.appendChild(tr);
             });
 
+            document.getElementById('cart-drawer-subtotal').innerText = `₹${total}`;
             document.getElementById('cart-total').innerText = `₹${total}`;
         }
 
@@ -658,6 +807,28 @@
             toggleCartDrawer(false);
             const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
             
+            // Set Invoice Meta
+            document.getElementById('invoice-date').innerText = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+            document.getElementById('invoice-ref').innerText = 'INV-' + Math.floor(100000 + Math.random() * 900000);
+
+            // Populate Professional Itemized Billing Table in Checkout Modal
+            const billingContainer = document.getElementById('billing-items-list');
+            billingContainer.innerHTML = '';
+            cart.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-2 font-semibold text-gray-800 line-clamp-1">${item.title}</td>
+                    <td class="p-2 text-center font-bold text-gray-600">${item.qty}</td>
+                    <td class="p-2 text-right text-gray-600">₹${item.price}</td>
+                    <td class="p-2 text-right font-extrabold text-brand-600">₹${item.price * item.qty}</td>
+                `;
+                billingContainer.appendChild(tr);
+            });
+
+            // Set Financial Totals
+            document.getElementById('bill-subtotal').innerText = `₹${total}`;
+            document.getElementById('bill-grand-total').innerText = `₹${total}`;
+
             document.getElementById('display-payee-name').innerText = paymentSettings.payeeName;
             document.getElementById('display-upi-id').innerText = paymentSettings.upiId;
             document.getElementById('display-bank-acc').innerText = paymentSettings.bankAcc;
@@ -682,7 +853,23 @@
             const upiUri = `upi://pay?pa=${upiId}&pn=${payeeName}&am=${amount}&cu=INR&tn=DesiStyleWearOrder`;
             
             document.getElementById('direct-upi-link').href = upiUri;
-            document.getElementById('upi-qr-image').src = `https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${encodeURIComponent(upiUri)}&choe=UTF-8`;
+
+            if (paymentSettings.customQrBase64) {
+                document.getElementById('upi-qr-image').src = paymentSettings.customQrBase64;
+            } else {
+                document.getElementById('upi-qr-image').src = `https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${encodeURIComponent(upiUri)}&choe=UTF-8`;
+            }
+        }
+
+        function handleQrUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    paymentSettings.customQrBase64 = evt.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         function handlePlaceOrder(e) {
@@ -776,6 +963,15 @@
             }
         }
 
+        function updateProductImage(id, newImgUrl) {
+            const p = products.find(prod => prod.id === id);
+            if (p) {
+                p.image = newImgUrl.trim() || p.image;
+                localStorage.setItem('desi_products_1000', JSON.stringify(products));
+                renderProducts();
+            }
+        }
+
         function renderAdminProducts() {
             const table = document.getElementById('admin-product-table');
             document.getElementById('admin-product-count').innerText = products.length;
@@ -786,7 +982,10 @@
                 tr.innerHTML = `
                     <td class="p-2 font-bold text-gray-800">${p.title}</td>
                     <td class="p-2">
-                        <input type="number" value="${p.price}" onchange="updateProductPrice(${p.id}, this.value)" class="w-16 px-1 py-0.5 border rounded font-bold">
+                        <input type="url" value="${p.image}" onchange="updateProductImage(${p.id}, this.value)" class="w-32 px-1 py-0.5 border rounded text-[10px]">
+                    </td>
+                    <td class="p-2">
+                        <input type="number" value="${p.price}" onchange="updateProductPrice(${p.id}, this.value)" class="w-14 px-1 py-0.5 border rounded font-bold">
                     </td>
                     <td class="p-2 text-right">
                         <button onclick="deleteProduct(${p.id})" class="text-red-600 font-bold"><i class="fa-solid fa-trash-can"></i></button>
@@ -803,7 +1002,7 @@
             paymentSettings.bankIfsc = document.getElementById('admin-bank-ifsc').value;
 
             localStorage.setItem('desi_payment_settings', JSON.stringify(paymentSettings));
-            alert("Payment & Bank Details Saved!");
+            alert("Payment, Bank & Custom QR Scanner Details Saved!");
         }
 
         function renderAdminOrders() {
