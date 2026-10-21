@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desi Style Wear | Mega Store Catalog</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            500: '#e11d48',
+                            600: '#e11d48',
+                            700: '#be123c',
+                            800: '#9f1239',
+                            gold: '#d97706',
+                            goldlight: '#fef3c7'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e11d48;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Top Announcement Bar -->
+    <div
+        class="bg-gradient-to-r from-brand-800 via-brand-600 to-brand-800 text-white text-xs sm:text-sm py-2 px-4 text-center font-medium shadow-sm flex items-center justify-between">
+        <div class="hidden sm:block">🎉 Festive Season Special Sale!</div>
+        <div class="mx-auto sm:mx-0">
+            🚚 <span class="font-bold text-yellow-300">100% Free Home Delivery</span> Available Across India!
+        </div>
+        <div class="hidden md:block text-xs text-brand-100">📞 Support: 8002322367</div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 bg-white shadow-md border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 sm:h-20">
+                <!-- Brand Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('shop')">
+                    <div
+                        class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-tr from-brand-700 to-amber-500 rounded-xl flex items-center justify-center text-white shadow-lg text-xl sm:text-2xl font-black tracking-widest">
+                        DS
+                    </div>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-black tracking-tight text-gray-900 leading-none">
+                            DESI <span class="text-brand-600">STYLE</span> WEAR
+                        </h1>
+                        <p class="text-[10px] text-gray-500 font-semibold tracking-wider uppercase mt-0.5">Desi Fashion
+                            Mega Catalog</p>
+                    </div>
+                </div>
+
+                <!-- Nav Buttons -->
+                <div class="flex items-center space-x-2 sm:space-x-4">
+                    <button onclick="switchTab('shop')" id="nav-shop"
+                        class="nav-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold text-brand-600 bg-brand-50 flex items-center space-x-1.5 transition">
+                        <i class="fa-solid fa-store"></i>
+                        <span class="hidden sm:inline">Store (<span id="top-total-count">0</span>)</span>
+                    </button>
+
+                    <button onclick="switchTab('track')" id="nav-track"
+                        class="nav-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold text-gray-600 hover:bg-gray-100 flex items-center space-x-1.5 transition">
+                        <i class="fa-solid fa-truck-fast"></i>
+                        <span>Track Order</span>
+                    </button>
+
+                    <!-- Cart Trigger Button -->
+                    <button onclick="toggleCartDrawer()"
+                        class="relative p-2 text-gray-700 hover:text-brand-600 transition">
+                        <i class="fa-solid fa-bag-shopping text-xl sm:text-2xl"></i>
+                        <span id="cart-count-badge"
+                            class="absolute -top-1 -right-1 bg-brand-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">0</span>
+                    </button>
+
+                    <!-- Admin Access Toggle -->
+                    <button onclick="openAdminAuthModal()" id="nav-admin"
+                        class="ml-2 px-3 py-1.5 bg-gray-900 text-yellow-400 border border-yellow-500/40 hover:bg-black text-xs font-bold rounded-lg shadow transition flex items-center space-x-1">
+                        <i class="fa-solid fa-lock text-yellow-400"></i>
+                        <span>Admin Panel</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINERS -->
+    <main class="flex-grow">
+
+        <!-- ================= STOREFRONT TAB ================= -->
+        <section id="tab-shop" class="tab-content">
+
+            <!-- Hero Banner -->
+            <div
+                class="relative bg-gradient-to-r from-gray-900 via-brand-900 to-gray-900 text-white py-10 sm:py-16 px-4 overflow-hidden">
+                <div
+                    class="absolute inset-0 opacity-20 bg-[radial-gradient(#e11d48_1px,transparent_1px)] [background-size:16px_16px]">
+                </div>
+                <div
+                    class="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div class="text-center md:text-left space-y-3 max-w-xl">
+                        <span
+                            class="bg-yellow-500/20 text-yellow-300 text-xs font-extrabold uppercase px-3 py-1 rounded-full border border-yellow-500/30">
+                            ✨ Pure Quality Fabrics
+                        </span>
+                        <h2 class="text-3xl sm:text-5xl font-extrabold text-white leading-tight">
+                            Desi Elegance,<br><span class="text-yellow-400">Modern Comfort.</span>
+                        </h2>
+                        <p class="text-gray-300 text-sm sm:text-base">
+                            Explore Over 1,000+ Kurtis, Sarees, Men's Ethnic Wear & Everyday Suits.
+                        </p>
+                    </div>
+                    <div
+                        class="bg-white/10 p-4 rounded-2xl border border-white/20 backdrop-blur w-full max-w-sm text-center">
+                        <p class="text-xs font-semibold text-yellow-300 uppercase tracking-wider">Mega Store Catalog</p>
+                        <p class="text-2xl font-black text-white mt-1">1,000+ Live Items</p>
+                        <p class="text-xs text-gray-300 mt-1">Instant Online UPI Payment & Free Shipping</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters & Search Bar -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="flex flex-col md:flex-row gap-4 items-center justify-between mb-8">
+                    <!-- Category Pills -->
+                    <div class="flex flex-wrap gap-2 justify-center" id="category-pills">
+                        <button onclick="filterCategory('All')"
+                            class="cat-pill active-pill px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-brand-600 text-white border border-gray-200">
+                            All Clothes (<span id="cat-count-all">0</span>)
+                        </button>
+                        <button onclick="filterCategory('Women')"
+                            class="cat-pill px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-white text-gray-600 hover:bg-gray-100 border border-gray-200">
+                            Women's Collection
+                        </button>
+                        <button onclick="filterCategory('Men')"
+                            class="cat-pill px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-white text-gray-600 hover:bg-gray-100 border border-gray-200">
+                            Men's Wear
+                        </button>
+                        <button onclick="filterCategory('Festive')"
+                            class="cat-pill px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-white text-gray-600 hover:bg-gray-100 border border-gray-200">
+                            Festival Specials 🎉
+                        </button>
+                    </div>
+
+                    <!-- Search Input -->
+                    <div class="relative w-full md:w-72">
+                        <i
+                            class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                        <input type="text" id="search-input" onkeyup="filterProducts()"
+                            placeholder="Search from 1000+ items..."
+                            class="w-full pl-10 pr-4 py-2 text-sm bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:outline-none shadow-sm">
+                    </div>
+                </div>
+
+                <!-- Product Grid -->
+                <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    <!-- Dynamic Product Cards -->
+                </div>
+
+                <!-- Pagination / Load More Bar -->
+                <div class="mt-8 text-center flex flex-col items-center justify-center space-y-2">
+                    <p class="text-xs text-gray-500">Showing <span id="showing-count"
+                            class="font-bold text-gray-800">0</span> of <span id="total-count-display"
+                            class="font-bold text-brand-600">0</span> products</p>
+                    <button id="btn-load-more" onclick="loadMoreProducts()"
+                        class="bg-gray-900 hover:bg-black text-white text-xs font-bold px-6 py-2.5 rounded-xl shadow transition hidden">
+                        Load More Products
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= TRACK ORDER TAB ================= -->
+        <section id="tab-track" class="tab-content hidden max-w-3xl mx-auto px-4 py-12">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-100 text-center">
+                <div
+                    class="w-16 h-16 bg-brand-50 rounded-full flex items-center justify-center mx-auto text-brand-600 text-2xl mb-4">
+                    <i class="fa-solid fa-magnifying-glass-location"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900">Track Your Order</h2>
+                <p class="text-gray-500 text-xs sm:text-sm mt-1">Enter your Order ID to check live shipment status.</p>
+
+                <div class="mt-6 flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+                    <input type="text" id="track-order-id" placeholder="e.g. ORD-1029"
+                        class="flex-grow px-4 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none uppercase font-semibold">
+                    <button onclick="trackOrder()"
+                        class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-2.5 rounded-xl shadow transition text-sm">
+                        Track Now
+                    </button>
+                </div>
+
+                <div id="track-result" class="mt-8 text-left hidden border-t border-gray-100 pt-6">
+                    <!-- Tracking details -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= ADMIN PANEL TAB ================= -->
+        <section id="tab-admin" class="tab-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div
+                class="bg-slate-900 text-white p-6 rounded-2xl shadow-xl mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <span
+                        class="bg-yellow-500 text-slate-950 font-black text-[10px] uppercase px-2.5 py-0.5 rounded">Store
+                        Admin</span>
+                    <h2 class="text-2xl font-extrabold mt-1">Desi Style Control Panel</h2>
+                    <p class="text-slate-400 text-xs">Logged in as Administrator (Rudra)</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="generate1000Catalogs()"
+                        class="px-3 py-2 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-black text-xs rounded-xl shadow border border-yellow-300 transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>Generate 1,000 Catalogs Now</span>
+                    </button>
+                    <button onclick="logoutAdmin()"
+                        class="px-3 py-2 bg-red-800 hover:bg-red-700 text-white text-xs font-semibold rounded-xl transition">
+                        <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                <!-- Left Column: Manual Add & Payment Config -->
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center space-x-2">
+                            <i class="fa-solid fa-circle-plus text-brand-600"></i>
+                            <span>Add Single Product</span>
+                        </h3>
+                        <form id="add-product-form" onsubmit="handleProductAdd(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Product
+                                    Title</label>
+                                <input type="text" id="admin-p-title" required placeholder="e.g. Silk Anarkali Suit"
+                                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Category</label>
+                                    <select id="admin-p-cat"
+                                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none bg-white">
+                                        <option value="Women">Women</option>
+                                        <option value="Men">Men</option>
+                                        <option value="Festive">Festive</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Selling Price
+                                        (₹)</label>
+                                    <input type="number" id="admin-p-price" required placeholder="899"
+                                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Image URL</label>
+                                <input type="url" id="admin-p-img" required
+                                    placeholder="https://images.unsplash.com/..."
+                                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
+                            </div>
+
+                            <button type="submit"
+                                class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl shadow transition text-sm">
+                                Save Product
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- PAYMENT METHODS CONFIG -->
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center space-x-2">
+                            <i class="fa-solid fa-wallet text-blue-600"></i>
+                            <span>Payment Settings</span>
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="space-y-2 border-b pb-3">
+                                <p class="text-xs font-extrabold text-blue-600 uppercase">UPI Setup</p>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-gray-600 mb-0.5">UPI ID</label>
+                                    <input type="text" id="admin-upi-id" value="bikki708@ptaxis"
+                                        class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none font-semibold">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-gray-600 mb-0.5">Payee Name</label>
+                                    <input type="text" id="admin-upi-name" value="bikki kumar das"
+                                        class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                            </div>
+
+                            <div class="space-y-2 border-b pb-3">
+                                <p class="text-xs font-extrabold text-purple-600 uppercase">Bank Account Details</p>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-gray-600 mb-0.5">Bank & Account
+                                        No.</label>
+                                    <input type="text" id="admin-bank-acc" value="Kotak Mahindra Bank - A/C: 5151073620"
+                                        class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-gray-600 mb-0.5">IFSC Code &
+                                        Phone</label>
+                                    <input type="text" id="admin-bank-ifsc" value="KKBK0000152 (Ph: 8002322367)"
+                                        class="w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
+                                </div>
+                            </div>
+
+                            <button onclick="saveAllPaymentConfig()"
+                                class="w-full bg-gray-900 hover:bg-black text-white text-xs font-bold py-2.5 rounded-xl shadow transition">
+                                Save Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Products & Orders Dashboard -->
+                <div class="lg:col-span-2 space-y-8">
+
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-gray-900">Store Live Catalog (<span
+                                    id="admin-product-count">0</span> Items)</h3>
+                        </div>
+
+                        <div class="max-h-96 overflow-y-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-gray-100 text-gray-600 uppercase font-bold sticky top-0">
+                                    <tr>
+                                        <th class="p-3">Product</th>
+                                        <th class="p-3">Category</th>
+                                        <th class="p-3">Price</th>
+                                        <th class="p-3 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-product-table" class="divide-y divide-gray-100">
+                                    <!-- Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-gray-900">Received Customer Orders</h3>
+                            <span id="order-count-badge"
+                                class="bg-brand-100 text-brand-800 text-xs font-bold px-2.5 py-1 rounded-full">0
+                                Orders</span>
+                        </div>
+                        <div id="admin-orders-list" class="space-y-4">
+                            <!-- Orders -->
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ADMIN LOGIN AUTH MODAL -->
+    <div id="admin-auth-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-100">
+            <div class="text-center space-y-1">
+                <div
+                    class="w-12 h-12 bg-gray-900 text-yellow-400 rounded-xl flex items-center justify-center mx-auto text-xl shadow mb-2">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 class="text-xl font-black text-gray-900">Admin Login</h3>
+                <p class="text-xs text-gray-500">Enter Admin credentials to access dashboard</p>
+            </div>
+
+            <form onsubmit="handleAdminLogin(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Username</label>
+                    <input type="text" id="admin-user-input" required placeholder="Enter Username"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Password</label>
+                    <input type="password" id="admin-pass-input" required placeholder="Enter Password"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
+                </div>
+                <div id="admin-auth-error" class="hidden text-xs text-red-600 font-bold text-center">
+                    ❌ Invalid Username or Password!
+                </div>
+                <div class="pt-2 flex gap-2">
+                    <button type="button" onclick="closeAdminAuthModal()"
+                        class="w-1/2 bg-gray-100 text-gray-700 font-bold py-2.5 rounded-xl text-xs">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="w-1/2 bg-gray-900 hover:bg-black text-white font-bold py-2.5 rounded-xl text-xs shadow">
+                        Login
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- SHOPPING CART SLIDE-OVER DRAWER -->
+    <div id="cart-drawer"
+        class="fixed inset-0 bg-black/60 z-50 transition-opacity opacity-0 pointer-events-none duration-300">
+        <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+            <div id="cart-drawer-panel"
+                class="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between transform translate-x-full transition-transform duration-300 ease-in-out">
+
+                <div class="p-4 sm:p-6 bg-gray-900 text-white flex justify-between items-center">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-bag-shopping text-yellow-400 text-xl"></i>
+                        <h2 class="text-lg font-bold">Your Shopping Cart</h2>
+                    </div>
+                    <button onclick="toggleCartDrawer()" class="text-gray-400 hover:text-white p-1">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+
+                <div id="cart-items-container"
+                    class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 divide-y divide-gray-100">
+                    <!-- Dynamic Cart -->
+                </div>
+
+                <div class="p-4 sm:p-6 bg-gray-50 border-t border-gray-200 space-y-3">
+                    <div class="space-y-1.5 text-xs text-gray-600">
+                        <div class="flex justify-between">
+                            <span>Subtotal:</span>
+                            <span id="cart-subtotal" class="font-bold text-gray-900">₹0</span>
+                        </div>
+                        <div class="flex justify-between text-green-600 font-bold">
+                            <span>Delivery Charges:</span>
+                            <span>FREE 🎉</span>
+                        </div>
+                        <div class="flex justify-between text-sm font-black text-gray-900 pt-2 border-t">
+                            <span>Total Payable:</span>
+                            <span id="cart-total" class="text-brand-600 text-base">₹0</span>
+                        </div>
+                    </div>
+
+                    <button onclick="openCheckoutModal()" id="btn-proceed-checkout" disabled
+                        class="w-full bg-brand-600 hover:bg-brand-700 disabled:bg-gray-300 text-white font-bold py-3 rounded-xl shadow transition text-sm flex items-center justify-center space-x-2">
+                        <span>Proceed to Checkout</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- CHECKOUT MODAL -->
+    <div id="checkout-modal"
+        class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden my-8">
+            <div
+                class="bg-gradient-to-r from-brand-700 to-brand-900 text-white p-4 sm:p-5 flex justify-between items-center">
+                <h3 class="font-bold text-base sm:text-lg flex items-center space-x-2">
+                    <i class="fa-solid fa-truck-ramp-box"></i>
+                    <span>Delivery Address & Payment</span>
+                </h3>
+                <button onclick="closeCheckoutModal()" class="text-white/80 hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="checkout-form" onsubmit="handlePlaceOrder(event)"
+                class="p-5 sm:p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold uppercase text-gray-500 tracking-wider">1. Delivery Information</h4>
+                    <input type="text" id="cust-name" required placeholder="Full Name"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="tel" id="cust-phone" required pattern="[0-9]{10}" placeholder="10-digit Phone"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
+                        <input type="text" id="cust-pincode" required placeholder="Pincode"
+                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none">
+                    </div>
+                    <textarea id="cust-address" required rows="2" placeholder="Village / Town Full Address & House No."
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none"></textarea>
+                </div>
+
+                <div class="space-y-3 pt-2 border-t">
+                    <h4 class="text-xs font-bold uppercase text-gray-500 tracking-wider">2. Choose Payment Method</h4>
+
+                    <div class="grid grid-cols-2 gap-3" id="payment-options-grid">
+                        <label
+                            class="border border-gray-200 rounded-xl p-3 flex flex-col items-center cursor-pointer hover:bg-gray-50 has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50/50 transition text-center">
+                            <input type="radio" name="payment_method" value="UPI / QR Code" checked
+                                onclick="togglePaymentView('UPI')" class="sr-only">
+                            <i class="fa-solid fa-qrcode text-2xl text-blue-600 mb-1"></i>
+                            <span class="text-xs font-bold text-gray-800">Online UPI / QR Code</span>
+                            <span class="text-[10px] text-gray-500">PhonePe, GPay, Paytm</span>
+                        </label>
+
+                        <label
+                            class="border border-gray-200 rounded-xl p-3 flex flex-col items-center cursor-pointer hover:bg-gray-50 has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50/50 transition text-center">
+                            <input type="radio" name="payment_method" value="Bank Transfer"
+                                onclick="togglePaymentView('BANK')" class="sr-only">
+                            <i class="fa-solid fa-building-columns text-2xl text-purple-600 mb-1"></i>
+                            <span class="text-xs font-bold text-gray-800">Bank Transfer</span>
+                            <span class="text-[10px] text-gray-500">Kotak Bank Transfer</span>
+                        </label>
+                    </div>
+
+                    <!-- Dynamic UPI Box -->
+                    <div id="upi-qr-box"
+                        class="bg-blue-50/60 border border-blue-200 p-4 rounded-xl text-center space-y-3 mt-3">
+                        <p class="text-xs font-bold text-blue-900">Scan QR Code or Click Pay via App</p>
+                        <div class="bg-white p-2 rounded-lg inline-block shadow-sm border border-blue-100">
+                            <img id="upi-qr-image" src="" alt="UPI Payment QR Code" class="w-36 h-36 mx-auto">
+                        </div>
+                        <p class="text-xs font-semibold text-gray-700">Payee Name: <span
+                                class="font-bold text-gray-900">bikki kumar das</span></p>
+                        <p class="text-xs font-semibold text-gray-700">UPI ID: <span id="display-upi-id"
+                                class="font-mono text-brand-600 font-bold">bikki708@ptaxis</span></p>
+                        <a id="direct-upi-link" href="#" target="_blank"
+                            class="inline-flex items-center space-x-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition">
+                            <i class="fa-solid fa-mobile-screen"></i>
+                            <span>Pay via PhonePe / Paytm / GPay</span>
+                        </a>
+                    </div>
+
+                    <!-- Bank Transfer Box -->
+                    <div id="bank-box"
+                        class="hidden bg-purple-50/60 border border-purple-200 p-4 rounded-xl text-xs space-y-2 text-gray-800 mt-3">
+                        <p class="font-bold text-purple-900 border-b pb-1">Bank Account Transfer Details:</p>
+                        <p><strong>Account Holder:</strong> bikki kumar das</p>
+                        <p><strong>Bank:</strong> Kotak Mahindra Bank</p>
+                        <p><strong>Account No:</strong> <span
+                                class="font-mono font-bold text-gray-900">5151073620</span></p>
+                        <p><strong>IFSC Code:</strong> <span
+                                class="font-mono font-bold text-gray-900">KKBK0000152</span></p>
+                        <p><strong>Phone / Ref:</strong> 8002322367</p>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] text-gray-400 uppercase font-bold">Total Amount (Free Shipping)</p>
+                        <p id="checkout-total-display" class="text-xl font-black text-brand-600">₹0</p>
+                    </div>
+                    <button type="submit"
+                        class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-2.5 rounded-xl shadow transition text-sm">
+                        Confirm & Place Order
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- SUCCESS MODAL -->
+    <div id="success-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 text-center space-y-4">
+            <div
+                class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto text-green-600 text-3xl">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h3 class="text-2xl font-black text-gray-900">Order Placed! 🎉</h3>
+            <div class="bg-gray-50 p-3 rounded-xl border text-xs space-y-1">
+                <p class="text-gray-500">Your Tracking Order ID:</p>
+                <p id="confirmed-order-id" class="font-mono text-lg font-bold text-brand-600">ORD-1001</p>
+            </div>
+            <button onclick="closeSuccessModal()"
+                class="w-full bg-gray-900 hover:bg-black text-white font-bold py-2.5 rounded-xl transition text-sm">
+                Continue Shopping
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC ENGINE -->
+    <script>
+        const FASHION_IMAGES = {
+            Women: [
+                "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=600&q=80",
+                "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=600&q=80",
+                "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=600&q=80"
+            ],
+            Men: [
+                "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80",
+                "https://images.unsplash.com/photo-1597983073493-88cd35cf03b0?auto=format&fit=crop&w=600&q=80"
+            ],
+            Festive: [
+                "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80",
+                "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=600&q=80"
+            ]
+        };
+
+        const CLOTH_NAMES = {
+            Women: ["Anarkali Suit Set", "Printed Cotton Kurti", "Chanderi Silk Saree", "Designer Palazzo Set"],
+            Men: ["Royal Silk Kurta Pyjama", "Embroidered Nehru Jacket", "Cotton Slim Fit Kurta"],
+            Festive: ["Heavy Mirror Work Lehenga", "Gold Zari Silk Saree", "Sherwani Style Kurta Set"]
+        };
+
+        let products = [];
+        let cart = [];
+        let orders = [];
+        let currentCategory = 'All';
+        let displayLimit = 24;
+        let isAdminLoggedIn = false;
+
+        let paymentSettings = {
+            upiId: "bikki708@ptaxis",
+            payeeName: "bikki kumar das",
+            bankAcc: "Kotak Mahindra Bank - A/C: 5151073620",
+            bankIfsc: "KKBK0000152 (Ph: 8002322367)"
+        };
+
+        function initStore() {
+            const storedProds = localStorage.getItem('desi_products_1000');
+            if (storedProds) {
+                products = JSON.parse(storedProds);
+            } else {
+                generate1000Catalogs(false);
+            }
+
+            const storedOrders = localStorage.getItem('desi_orders');
+            if (storedOrders) orders = JSON.parse(storedOrders);
+
+            renderProducts();
+            renderAdminProducts();
+            renderAdminOrders();
+            updateCartBadge();
+        }
+
+        // ADMIN LOGIN AUTH
+        function openAdminAuthModal() {
+            if (isAdminLoggedIn) {
+                switchTab('admin');
+            } else {
+                document.getElementById('admin-auth-modal').classList.remove('hidden');
+            }
+        }
+
+        function closeAdminAuthModal() {
+            document.getElementById('admin-auth-modal').classList.add('hidden');
+            document.getElementById('admin-auth-error').classList.add('hidden');
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('admin-user-input').value;
+            const p = document.getElementById('admin-pass-input').value;
+
+            if (u === "Rudra" && p === "Vicky9091") {
+                isAdminLoggedIn = true;
+                closeAdminAuthModal();
+                switchTab('admin');
+            } else {
+                document.getElementById('admin-auth-error').classList.remove('hidden');
+            }
+        }
+
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            switchTab('shop');
+            alert("Admin Logged Out.");
+        }
+
+        function generate1000Catalogs(alertUser = true) {
+            products = [];
+            const categories = ["Women", "Men", "Festive"];
+
+            for (let i = 1; i <= 1000; i++) {
+                const cat = categories[i % 3];
+                const names = CLOTH_NAMES[cat];
+                const title = `Desi ${names[i % names.length]} #${1000 + i}`;
+                const basePrice = 399 + ((i * 37) % 2100);
+                const oldPrice = basePrice + 500 + ((i * 13) % 800);
+                const images = FASHION_IMAGES[cat];
+                const image = images[i % images.length];
+
+                products.push({
+                    id: 2000 + i,
+                    title: title,
+                    category: cat,
+                    price: basePrice,
+                    oldPrice: oldPrice,
+                    stock: "In Stock",
+                    image: image
+                });
+            }
+
+            localStorage.setItem('desi_products_1000', JSON.stringify(products));
+            displayLimit = 24;
+            renderProducts();
+            renderAdminProducts();
+
+            if (alertUser) alert("🎉 1,000 Products Catalog Generated Successfully!");
+        }
+
+        function switchTab(tabName) {
+            if (tabName === 'admin' && !isAdminLoggedIn) {
+                openAdminAuthModal();
+                return;
+            }
+
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+
+            const searchVal = document.getElementById('search-input').value.toLowerCase();
+
+            const filtered = products.filter(p => {
+                const matchesCat = (currentCategory === 'All') || (p.category === currentCategory);
+                const matchesSearch = p.title.toLowerCase().includes(searchVal);
+                return matchesCat && matchesSearch;
+            });
+
+            document.getElementById('top-total-count').innerText = products.length;
+            document.getElementById('cat-count-all').innerText = products.length;
+            document.getElementById('total-count-display').innerText = filtered.length;
+
+            const visibleItems = filtered.slice(0, displayLimit);
+            document.getElementById('showing-count').innerText = visibleItems.length;
+
+            if (visibleItems.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-500"><p class="font-bold">No products found.</p></div>`;
+                document.getElementById('btn-load-more').classList.add('hidden');
+                return;
+            }
+
+            visibleItems.forEach(p => {
+                const discount = Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100);
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl overflow-hidden border border-gray-200/80 shadow-sm hover:shadow-xl transition duration-300 flex flex-col justify-between group";
+
+                card.innerHTML = `
+                    <div>
+                        <div class="relative aspect-[4/5] overflow-hidden bg-gray-100">
+                            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy">
+                            <span class="absolute top-2 left-2 bg-brand-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow">
+                                ${discount}% OFF
+                            </span>
+                        </div>
+                        <div class="p-3 space-y-1">
+                            <h3 class="font-bold text-xs text-gray-900 line-clamp-1">${p.title}</h3>
+                            <div class="flex items-baseline space-x-2">
+                                <span class="text-base font-extrabold text-brand-600">₹${p.price}</span>
+                                <span class="text-xs text-gray-400 line-through">₹${p.oldPrice}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3 pt-0">
+                        <button onclick="addToCart(${p.id})" class="w-full bg-gray-900 hover:bg-brand-600 text-white font-bold py-2 rounded-xl text-xs transition">
+                            + Add to Cart
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            document.getElementById('btn-load-more').classList.toggle('hidden', filtered.length <= displayLimit);
+        }
+
+        function loadMoreProducts() {
+            displayLimit += 24;
+            renderProducts();
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            displayLimit = 24;
+            renderProducts();
+        }
+
+        function filterProducts() {
+            displayLimit = 24;
+            renderProducts();
+        }
+
+        // CART & CHECKOUT
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            const item = cart.find(i => i.id === id);
+            if (item) item.qty += 1;
+            else cart.push({ ...product, qty: 1 });
+
+            updateCartBadge();
+            renderCartDrawer();
+            toggleCartDrawer(true);
+        }
+
+        function updateCartBadge() {
+            const count = cart.reduce((s, i) => s + i.qty, 0);
+            document.getElementById('cart-count-badge').innerText = count;
+            document.getElementById('btn-proceed-checkout').disabled = cart.length === 0;
+        }
+
+        function toggleCartDrawer(open) {
+            const drawer = document.getElementById('cart-drawer');
+            const panel = document.getElementById('cart-drawer-panel');
+            if (open === true || drawer.classList.contains('opacity-0')) {
+                drawer.classList.remove('opacity-0', 'pointer-events-none');
+                panel.classList.remove('translate-x-full');
+            } else {
+                drawer.classList.add('opacity-0', 'pointer-events-none');
+                panel.classList.add('translate-x-full');
+            }
+        }
+
+        function renderCartDrawer() {
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                total += item.price * item.qty;
+                const div = document.createElement('div');
+                div.className = "flex space-x-3 pt-3";
+                div.innerHTML = `
+                    <img src="${item.image}" class="w-14 h-16 object-cover rounded-lg">
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-bold text-xs text-gray-900 line-clamp-1">${item.title}</h4>
+                            <p class="text-xs text-brand-600 font-extrabold">₹${item.price}</p>
+                        </div>
+                        <div class="text-xs text-gray-500">Qty: ${item.qty}</div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            document.getElementById('cart-subtotal').innerText = `₹${total}`;
+            document.getElementById('cart-total').innerText = `₹${total}`;
+        }
+
+        function openCheckoutModal() {
+            toggleCartDrawer(false);
+            const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            document.getElementById('checkout-total-display').innerText = `₹${total}`;
+
+            setupUpiQr(total);
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        function togglePaymentView(mode) {
+            document.getElementById('upi-qr-box').classList.toggle('hidden', mode !== 'UPI');
+            document.getElementById('bank-box').classList.toggle('hidden', mode !== 'BANK');
+        }
+
+        function setupUpiQr(amount) {
+            const upiUri = `upi://pay?pa=${paymentSettings.upiId}&pn=${encodeURIComponent(paymentSettings.payeeName)}&am=${amount}&cu=INR`;
+            document.getElementById('display-upi-id').innerText = paymentSettings.upiId;
+            document.getElementById('direct-upi-link').href = upiUri;
+            document.getElementById('upi-qr-image').src = `https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${encodeURIComponent(upiUri)}&choe=UTF-8`;
+        }
+
+        function handlePlaceOrder(e) {
+            e.preventDefault();
+            const orderId = 'ORD-' + Math.floor(1000 + Math.random() * 9000);
+            const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+
+            orders.unshift({
+                orderId,
+                date: new Date().toLocaleDateString('en-IN'),
+                customer: {
+                    name: document.getElementById('cust-name').value,
+                    phone: document.getElementById('cust-phone').value,
+                    address: document.getElementById('cust-address').value,
+                    pincode: document.getElementById('cust-pincode').value
+                },
+                items: [...cart],
+                totalAmount: total,
+                paymentMethod: document.querySelector('input[name="payment_method"]:checked').value,
+                status: "Order Confirmed"
+            });
+
+            localStorage.setItem('desi_orders', JSON.stringify(orders));
+            cart = [];
+            updateCartBadge();
+            closeCheckoutModal();
+
+            document.getElementById('confirmed-order-id').innerText = orderId;
+            document.getElementById('success-modal').classList.remove('hidden');
+            renderAdminOrders();
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('success-modal').classList.add('hidden');
+            switchTab('shop');
+        }
+
+        function trackOrder() {
+            const inputId = document.getElementById('track-order-id').value.trim().toUpperCase();
+            const resultBox = document.getElementById('track-result');
+            resultBox.classList.remove('hidden');
+
+            const order = orders.find(o => o.orderId === inputId);
+            if (!order) {
+                resultBox.innerHTML = `<p class="text-xs text-red-600 font-bold text-center">❌ Order ID not found.</p>`;
+                return;
+            }
+
+            resultBox.innerHTML = `
+                <div class="bg-gray-50 p-4 rounded-xl border text-xs space-y-2">
+                    <p class="font-bold text-brand-600">${order.orderId} - Status: ${order.status}</p>
+                    <p class="text-gray-600">Total: ₹${order.totalAmount} (${order.paymentMethod})</p>
+                </div>
+            `;
+        }
+
+        // ADMIN CONTROLS
+        function handleProductAdd(e) {
+            e.preventDefault();
+            const title = document.getElementById('admin-p-title').value;
+            const category = document.getElementById('admin-p-cat').value;
+            const price = parseFloat(document.getElementById('admin-p-price').value);
+            const image = document.getElementById('admin-p-img').value;
+
+            products.unshift({
+                id: Date.now(),
+                title, category, price, oldPrice: price + 400, stock: "In Stock", image
+            });
+
+            localStorage.setItem('desi_products_1000', JSON.stringify(products));
+            alert("Product Added!");
+            renderProducts();
+            renderAdminProducts();
+        }
+
+        function renderAdminProducts() {
+            const table = document.getElementById('admin-product-table');
+            document.getElementById('admin-product-count').innerText = products.length;
+            table.innerHTML = '';
+
+            products.slice(0, 50).forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-gray-800">${p.title}</td>
+                    <td class="p-3">${p.category}</td>
+                    <td class="p-3 font-bold">₹${p.price}</td>
+                    <td class="p-3 text-right text-gray-400">#${p.id}</td>
+                `;
+                table.appendChild(tr);
+            });
+        }
+
+        function renderAdminOrders() {
+            const container = document.getElementById('admin-orders-list');
+            document.getElementById('order-count-badge').innerText = `${orders.length} Orders`;
+            container.innerHTML = orders.length === 0 ? `<p class="text-xs text-gray-400 text-center">No orders yet.</p>` : '';
+
+            orders.forEach(ord => {
+                const div = document.createElement('div');
+                div.className = "border p-3 rounded-xl bg-gray-50 text-xs space-y-1";
+                div.innerHTML = `
+                    <div class="flex justify-between font-bold text-brand-600">
+                        <span>${ord.orderId}</span>
+                        <span>₹${ord.totalAmount} (${ord.paymentMethod})</span>
+                    </div>
+                    <p class="text-gray-700">${ord.customer.name} - ${ord.customer.phone}</p>
+                    <p class="text-gray-500">${ord.customer.address}</p>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function saveAllPaymentConfig() {
+            paymentSettings.upiId = document.getElementById('admin-upi-id').value;
+            paymentSettings.payeeName = document.getElementById('admin-upi-name').value;
+            paymentSettings.bankAcc = document.getElementById('admin-bank-acc').value;
+            paymentSettings.bankIfsc = document.getElementById('admin-bank-ifsc').value;
+
+            localStorage.setItem('desi_payment_settings', JSON.stringify(paymentSettings));
+            alert("🎉 Payment Setup Saved!");
+        }
+
+        window.onload = initStore;
+    </script>
+</body>
+
+</html>
