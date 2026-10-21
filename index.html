@@ -167,23 +167,107 @@
             </div>
         </section>
 
-        <!-- ADMIN TAB -->
-        <section id="tab-admin" class="tab-content hidden max-w-4xl mx-auto px-3 py-6 space-y-4">
+        <!-- FULL FEATURED ADMIN TAB -->
+        <section id="tab-admin" class="tab-content hidden max-w-5xl mx-auto px-3 py-6 space-y-6">
             <div class="bg-gray-900 text-white p-4 rounded-xl flex justify-between items-center">
                 <div>
                     <h3 class="font-bold text-sm">Admin Dashboard</h3>
-                    <p class="text-[10px] text-gray-400">Logged in as Rudra</p>
+                    <p class="text-[10px] text-gray-400">Logged in as Administrator (Rudra)</p>
                 </div>
-                <button onclick="logoutAdmin()" class="bg-red-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg">Logout</button>
+                <div class="flex gap-2">
+                    <button onclick="generate1000Catalogs()" class="bg-gradient-to-r from-amber-500 to-yellow-600 text-black font-black text-xs px-3 py-1.5 rounded-lg">
+                        ⚡ Auto 1,000 Items
+                    </button>
+                    <button onclick="logoutAdmin()" class="bg-red-700 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg">Logout</button>
+                </div>
             </div>
 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <!-- Add Product Form -->
+                <div class="bg-white p-4 rounded-xl border border-gray-200 space-y-3">
+                    <h4 class="font-bold text-xs uppercase text-brand-600 flex items-center space-x-1">
+                        <i class="fa-solid fa-plus-circle"></i>
+                        <span>Add New Product</span>
+                    </h4>
+                    <form onsubmit="handleProductAdd(event)" class="space-y-2">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-600">Title</label>
+                            <input type="text" id="admin-p-title" required placeholder="e.g. Silk Saree" class="w-full px-2.5 py-1.5 text-xs border rounded-lg">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-600">Category</label>
+                                <select id="admin-p-cat" class="w-full px-2.5 py-1.5 text-xs border rounded-lg bg-white">
+                                    <option value="Women">Women</option>
+                                    <option value="Men">Men</option>
+                                    <option value="Festive">Festive</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-600">Selling Price (₹)</label>
+                                <input type="number" id="admin-p-price" required placeholder="899" class="w-full px-2.5 py-1.5 text-xs border rounded-lg">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-600">Image URL</label>
+                            <input type="url" id="admin-p-img" required placeholder="https://..." class="w-full px-2.5 py-1.5 text-xs border rounded-lg">
+                        </div>
+                        <button type="submit" class="w-full bg-brand-600 text-white font-bold py-2 rounded-lg text-xs">
+                            Add Product
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Payment Details Setup -->
+                <div class="bg-white p-4 rounded-xl border border-gray-200 space-y-3">
+                    <h4 class="font-bold text-xs uppercase text-blue-600 flex items-center space-x-1">
+                        <i class="fa-solid fa-wallet"></i>
+                        <span>Payment & Bank Setup</span>
+                    </h4>
+                    <div class="space-y-2 text-xs">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-600">UPI ID</label>
+                            <input type="text" id="admin-upi-id" value="bikki708@ptaxis" class="w-full px-2.5 py-1.5 border rounded-lg font-bold text-gray-800">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-600">Payee Name</label>
+                            <input type="text" id="admin-upi-name" value="bikki kumar das" class="w-full px-2.5 py-1.5 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-600">Bank & A/C No.</label>
+                            <input type="text" id="admin-bank-acc" value="Kotak Mahindra Bank - A/C: 5151073620" class="w-full px-2.5 py-1.5 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-600">IFSC Code & Phone</label>
+                            <input type="text" id="admin-bank-ifsc" value="KKBK0000152 (Ph: 8002322367)" class="w-full px-2.5 py-1.5 border rounded-lg">
+                        </div>
+                        <button onclick="saveAllPaymentConfig()" class="w-full bg-gray-900 text-white font-bold py-2 rounded-lg text-xs">
+                            Save Payment Settings
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Product Edit & Management Table -->
             <div class="bg-white p-4 rounded-xl border border-gray-200 space-y-3">
-                <h4 class="font-bold text-xs uppercase text-gray-700">Quick Actions</h4>
-                <button onclick="generate1000Catalogs()" class="w-full bg-gradient-to-r from-amber-500 to-yellow-600 text-black font-black text-xs py-2 rounded-lg">
-                    ⚡ Generate 1,000 Catalog Products
-                </button>
+                <h4 class="font-bold text-xs uppercase text-gray-700">Live Catalog Management (<span id="admin-product-count">0</span>)</h4>
+                <div class="max-h-64 overflow-y-auto border rounded-lg">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-gray-100 uppercase font-bold text-[10px] text-gray-600 sticky top-0">
+                            <tr>
+                                <th class="p-2">Item</th>
+                                <th class="p-2">Price (₹)</th>
+                                <th class="p-2 text-right">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-product-table" class="divide-y text-[11px]"></tbody>
+                    </table>
+                </div>
             </div>
 
+            <!-- Customer Orders List -->
             <div class="bg-white p-4 rounded-xl border border-gray-200 space-y-3">
                 <h4 class="font-bold text-xs uppercase text-gray-700">Received Customer Orders</h4>
                 <div id="admin-orders-list" class="space-y-2"></div>
@@ -276,19 +360,16 @@
 
                     <div id="upi-qr-box" class="bg-blue-50 border p-3 rounded-xl text-center space-y-2">
                         <img id="upi-qr-image" src="" class="w-28 h-28 mx-auto rounded border bg-white p-1">
-                        <p class="font-bold text-[11px]">Payee: bikki kumar das</p>
-                        <p class="font-mono text-brand-600 font-bold text-[11px]">UPI: bikki708@ptaxis</p>
+                        <p class="font-bold text-[11px]">Payee: <span id="display-payee-name">bikki kumar das</span></p>
+                        <p class="font-mono text-brand-600 font-bold text-[11px]">UPI: <span id="display-upi-id">bikki708@ptaxis</span></p>
                         <a id="direct-upi-link" href="#" target="_blank" class="block bg-blue-600 text-white font-bold py-1.5 rounded-lg text-[11px]">
                             Pay via UPI App
                         </a>
                     </div>
 
                     <div id="bank-box" class="hidden bg-purple-50 border p-3 rounded-xl space-y-1 text-[11px]">
-                        <p><strong>A/C Holder:</strong> bikki kumar das</p>
-                        <p><strong>Bank:</strong> Kotak Mahindra Bank</p>
-                        <p><strong>A/C No:</strong> 5151073620</p>
-                        <p><strong>IFSC:</strong> KKBK0000152</p>
-                        <p><strong>Phone:</strong> 8002322367</p>
+                        <p><strong>A/C Details:</strong> <span id="display-bank-acc">Kotak Mahindra Bank - A/C: 5151073620</span></p>
+                        <p><strong>IFSC Code:</strong> <span id="display-bank-ifsc">KKBK0000152 (Ph: 8002322367)</span></p>
                     </div>
                 </div>
 
@@ -340,6 +421,13 @@
         let displayLimit = 20;
         let isAdminLoggedIn = false;
 
+        let paymentSettings = {
+            upiId: "bikki708@ptaxis",
+            payeeName: "bikki kumar das",
+            bankAcc: "Kotak Mahindra Bank - A/C: 5151073620",
+            bankIfsc: "KKBK0000152 (Ph: 8002322367)"
+        };
+
         function initStore() {
             const storedProds = localStorage.getItem('desi_products_1000');
             if (storedProds) {
@@ -351,7 +439,17 @@
             const storedOrders = localStorage.getItem('desi_orders');
             if (storedOrders) orders = JSON.parse(storedOrders);
 
+            const storedPayments = localStorage.getItem('desi_payment_settings');
+            if (storedPayments) {
+                paymentSettings = JSON.parse(storedPayments);
+                document.getElementById('admin-upi-id').value = paymentSettings.upiId;
+                document.getElementById('admin-upi-name').value = paymentSettings.payeeName;
+                document.getElementById('admin-bank-acc').value = paymentSettings.bankAcc;
+                document.getElementById('admin-bank-ifsc').value = paymentSettings.bankIfsc;
+            }
+
             renderProducts();
+            renderAdminProducts();
             renderAdminOrders();
             updateCartBadge();
         }
@@ -410,6 +508,7 @@
             localStorage.setItem('desi_products_1000', JSON.stringify(products));
             displayLimit = 20;
             renderProducts();
+            renderAdminProducts();
 
             if (alertUser) alert("1,000 Products Loaded!");
         }
@@ -558,6 +657,12 @@
         function openCheckoutModal() {
             toggleCartDrawer(false);
             const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            
+            document.getElementById('display-payee-name').innerText = paymentSettings.payeeName;
+            document.getElementById('display-upi-id').innerText = paymentSettings.upiId;
+            document.getElementById('display-bank-acc').innerText = paymentSettings.bankAcc;
+            document.getElementById('display-bank-ifsc').innerText = paymentSettings.bankIfsc;
+
             setupUpiQr(total);
             document.getElementById('checkout-modal').classList.remove('hidden');
         }
@@ -572,8 +677,8 @@
         }
 
         function setupUpiQr(amount) {
-            const payeeName = encodeURIComponent("bikki kumar das");
-            const upiId = "bikki708@ptaxis";
+            const payeeName = encodeURIComponent(paymentSettings.payeeName);
+            const upiId = paymentSettings.upiId;
             const upiUri = `upi://pay?pa=${upiId}&pn=${payeeName}&am=${amount}&cu=INR&tn=DesiStyleWearOrder`;
             
             document.getElementById('direct-upi-link').href = upiUri;
@@ -634,13 +739,80 @@
             `;
         }
 
+        // ADMIN MANAGEMENT FUNCTIONS
+        function handleProductAdd(e) {
+            e.preventDefault();
+            const title = document.getElementById('admin-p-title').value;
+            const category = document.getElementById('admin-p-cat').value;
+            const price = parseFloat(document.getElementById('admin-p-price').value);
+            const image = document.getElementById('admin-p-img').value;
+
+            products.unshift({
+                id: Date.now(),
+                title, category, price, oldPrice: price + 400, image
+            });
+
+            localStorage.setItem('desi_products_1000', JSON.stringify(products));
+            alert("Product Added Successfully!");
+            renderProducts();
+            renderAdminProducts();
+        }
+
+        function deleteProduct(id) {
+            if (confirm("Delete this product?")) {
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('desi_products_1000', JSON.stringify(products));
+                renderProducts();
+                renderAdminProducts();
+            }
+        }
+
+        function updateProductPrice(id, newPrice) {
+            const p = products.find(prod => prod.id === id);
+            if (p) {
+                p.price = parseFloat(newPrice) || p.price;
+                localStorage.setItem('desi_products_1000', JSON.stringify(products));
+                renderProducts();
+            }
+        }
+
+        function renderAdminProducts() {
+            const table = document.getElementById('admin-product-table');
+            document.getElementById('admin-product-count').innerText = products.length;
+            table.innerHTML = '';
+
+            products.slice(0, 50).forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-2 font-bold text-gray-800">${p.title}</td>
+                    <td class="p-2">
+                        <input type="number" value="${p.price}" onchange="updateProductPrice(${p.id}, this.value)" class="w-16 px-1 py-0.5 border rounded font-bold">
+                    </td>
+                    <td class="p-2 text-right">
+                        <button onclick="deleteProduct(${p.id})" class="text-red-600 font-bold"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                `;
+                table.appendChild(tr);
+            });
+        }
+
+        function saveAllPaymentConfig() {
+            paymentSettings.upiId = document.getElementById('admin-upi-id').value;
+            paymentSettings.payeeName = document.getElementById('admin-upi-name').value;
+            paymentSettings.bankAcc = document.getElementById('admin-bank-acc').value;
+            paymentSettings.bankIfsc = document.getElementById('admin-bank-ifsc').value;
+
+            localStorage.setItem('desi_payment_settings', JSON.stringify(paymentSettings));
+            alert("Payment & Bank Details Saved!");
+        }
+
         function renderAdminOrders() {
             const container = document.getElementById('admin-orders-list');
             container.innerHTML = orders.length === 0 ? `<p class="text-xs text-gray-400 text-center">No orders yet.</p>` : '';
 
             orders.forEach(ord => {
                 const div = document.createElement('div');
-                div.className = "border p-2.5 rounded-xl bg-gray-50 text-xs space-y-0.5";
+                div.className = "border p-2.5 rounded-xl bg-gray-50 text-xs space-y-1";
                 div.innerHTML = `
                     <div class="flex justify-between font-bold text-brand-600">
                         <span>${ord.orderId}</span>
@@ -648,9 +820,27 @@
                     </div>
                     <p class="text-gray-700">${ord.customer.name} - ${ord.customer.phone}</p>
                     <p class="text-gray-500 text-[10px]">${ord.customer.address}</p>
+                    <div class="pt-1 flex items-center justify-between">
+                        <span class="font-bold text-[10px] text-gray-600">Status:</span>
+                        <select onchange="updateOrderStatus('${ord.orderId}', this.value)" class="text-[10px] border rounded px-1 py-0.5 bg-white font-bold text-brand-600">
+                            <option value="Order Confirmed" ${ord.status === 'Order Confirmed' ? 'selected' : ''}>Order Confirmed</option>
+                            <option value="Dispatched" ${ord.status === 'Dispatched' ? 'selected' : ''}>Dispatched</option>
+                            <option value="Out for Delivery" ${ord.status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery</option>
+                            <option value="Delivered" ${ord.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                        </select>
+                    </div>
                 `;
                 container.appendChild(div);
             });
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const ord = orders.find(o => o.orderId === orderId);
+            if (ord) {
+                ord.status = newStatus;
+                localStorage.setItem('desi_orders', JSON.stringify(orders));
+                alert(`Order ${orderId} status changed to ${newStatus}`);
+            }
         }
 
         window.onload = initStore;
